@@ -1,23 +1,24 @@
+package org.daisuzz
+
+import kotlinx.cli.ArgParser
+import kotlinx.cli.ArgType
+import kotlinx.cli.required
 import java.io.File
 
 fun main(args: Array<String>) {
-    // 引数の数が適切でない場合はエラーメッセージを出力して終了する
-    if (args.size != 2) {
-        println("Usage: distinkt <CSVファイル> <カラム名>")
-        return
-    }
+    val parser = ArgParser("distinct")
+    val csvFileOption by parser.option(ArgType.String, shortName = "f", description = "CSV file path").required()
+    val columnNameOption by parser.option(ArgType.String, shortName = "c", description = "Column name to remove duplicates").required()
 
-    // 引数からCSVファイル名とカラム名を取得する
-    val csvFileName = args[0]
-    val column = args[1]
+    parser.parse(args)
 
     // CSVファイルを読み込む
-    val csvFile = File(csvFileName)
+    val csvFile = File(csvFileOption)
     val lines = csvFile.readLines()
 
     // CSVのヘッダ行から指定されたカラムのインデックスを取得する
     val header = lines.first().split(",")
-    val columnIndex = header.indexOf(column)
+    val columnIndex = header.indexOf(columnNameOption)
 
     // カラムの値をキーにして行を格納するMapを作成する
     val rows = mutableMapOf<String, String>()
